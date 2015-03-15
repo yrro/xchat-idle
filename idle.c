@@ -41,7 +41,7 @@ static const char awayText[] = "Idle for >= 5 minutes.";
 static xchat_plugin* ph;
 
 static Display* display = NULL;
-static XScreenSaverInfo* mit_info;
+static XScreenSaverInfo* mit_info = NULL;
 static int event_base, error_base;
 
 // RFC2812 Sec 2.3: max command line length 512 characters including CRLF
@@ -101,30 +101,37 @@ int xchat_plugin_init(
 
     if (snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText) >= awayCommandLength) {
         xchat_print(ph, "Away command too long\n");
-        return 0;
+        goto err;
     }
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
         xchat_print(ph, "XOpenDisplay failure\n");
-        return 0;
+        goto err;
     }
 
     if (!XScreenSaverQueryExtension(display, &event_base, &error_base)) {
         xchat_print(ph, "XScreenSaverQueryExtension failure\n");
-        return 0;
+        goto err;
     }
 
     mit_info = XScreenSaverAllocInfo();
+    if (!mit_info) {
+        xchat_print(ph, "XScreenSaverAllocInfo failure\n");
+        goto err;
+    }
 
     if (!xchat_hook_timer(ph, 60 * 1000, checkTimeout, NULL)) {
         xchat_print(ph, "xchat_hook_timer failure\n");
-        return 0;
+        goto err;
     }
 
     xchat_print(ph, "idle plugin loaded\n");
-
     return 1;
+
+err:
+    xchat_plugin_deinit();
+    return 0;
 }
 
 // vim: ts=8 sts=4 sw=4 et
