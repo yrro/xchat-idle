@@ -1,5 +1,5 @@
 CC := gcc
-CFLAGS := -O2 -std=c99 -Wall -Wextra -pedantic -fPIC
+CFLAGS := -g -O2 -std=c99 -Wall -Wextra -pedantic -fPIC
 LDFLAGS := -Wl,--export-dynamic
 LDLIBS := -lX11 -lXext -lXss
 
