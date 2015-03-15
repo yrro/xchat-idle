@@ -84,6 +84,7 @@ static int checkTimeout(void* __attribute__((unused)) userdata) {
 
 int xchat_plugin_deinit(void) {
     if (mit_info) XFree(mit_info);
+    if (display) XCloseDisplay(display);
 }
 
 int xchat_plugin_init(
