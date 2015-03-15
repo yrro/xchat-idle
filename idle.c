@@ -52,14 +52,6 @@ static int event_base, error_base;
 static char awayCommand[awayCommandLength];
 
 /**
- * Sends a command to every server that we are connected to.
- */
-static void send_command(xchat_plugin* ph, const char command[]) {
-    xchat_command(ph, command);
-    debug_print("command sent");
-}
-
-/**
  * Called every so often; if idle time > timeout, set /away.
  *
  * NB: assumes the away status is synchronised between different servers.
@@ -74,7 +66,7 @@ static int checkTimeout(void* __attribute__((unused)) userdata) {
     if (mit_info->idle > idleThreshold * 1000) {
         if (awayinfo == NULL) {
             debug_print("Going away!");
-            send_command(ph, awayCommand);
+            xchat_command(ph, awayCommand);
         } else {
             debug_print("already away.");
         }
@@ -83,7 +75,7 @@ static int checkTimeout(void* __attribute__((unused)) userdata) {
             // Only set back if we set away in the first place
             if (strncmp(awayinfo, awayText, strlen(awayText)) == 0) {
                 debug_print("we're back.");
-                send_command(ph, "allserv back");
+                xchat_command(ph, "allserv back");
             }
         } else {
             debug_print("still back.");
