@@ -35,7 +35,7 @@
 
 /* Settings */
 static const unsigned long idleThreshold = 60 * 5; // in seconds
-static const char* awayText = "Idle for >= 5 minutes.";
+static const char awayText[] = "Idle for >= 5 minutes.";
 
 /* Plugin data */
 static xchat_plugin* ph;
@@ -54,7 +54,7 @@ static char awayCommand[awayCommandLength];
 /**
  * Sends a command to every server that we are connected to.
  */
-static void send_command(xchat_plugin* ph, const char* command) {
+static void send_command(xchat_plugin* ph, const char command[]) {
     xchat_command(ph, command);
     debug_print("command sent");
 }
@@ -64,7 +64,7 @@ static void send_command(xchat_plugin* ph, const char* command) {
  *
  * NB: assumes the away status is synchronised between different servers.
  */
-static int checkTimeout(void* userdata) {
+static int checkTimeout(void* __attribute__((unused)) userdata) {
     const char* awayinfo = xchat_get_info(ph, "away");
 
     XScreenSaverQueryInfo(display, window, mit_info);
@@ -99,10 +99,10 @@ int xchat_plugin_deinit(void) {
 
 int xchat_plugin_init(
     xchat_plugin* plugin_handle,
-    char** plugin_name,
-    char** plugin_desc,
-    char** plugin_version,
-    char** arg
+    char* plugin_name[],
+    char* plugin_desc[],
+    char* plugin_version[],
+    char* __attribute__((unused)) arg[]
 ) {
     ph = plugin_handle;
 
