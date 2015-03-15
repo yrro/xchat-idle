@@ -117,7 +117,10 @@ int xchat_plugin_init(
 
     mit_info = XScreenSaverAllocInfo();
 
-    xchat_hook_timer(ph, 60 * 1000, checkTimeout, NULL);
+    if (!xchat_hook_timer(ph, 60 * 1000, checkTimeout, NULL)) {
+        xchat_print(ph, "xchat_hook_timer failure\n");
+        return 0;
+    }
 
     xchat_print(ph, "idle plugin loaded\n");
 
