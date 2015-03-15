@@ -105,8 +105,10 @@ int xchat_plugin_init(
     }
 
     display = XOpenDisplay(NULL);
-    if (display == NULL)
+    if (display == NULL) {
+        xchat_print(ph, "XOpenDisplay failure\n");
         return 0;
+    }
 
     if (!XScreenSaverQueryExtension(display, &event_base, &error_base))
         return 0;
