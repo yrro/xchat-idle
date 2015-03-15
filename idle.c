@@ -46,9 +46,7 @@ static XScreenSaverInfo* mit_info;
 static int event_base, error_base;
 
 // RFC2812 Sec 2.3: max command line length 512 characters including CRLF
-#define awayCommandLength 510
-//static const int awayCommandLength = 510; // CRAPPY C, GRR
-
+#define awayCommandLength 510 + 1
 static char awayCommand[awayCommandLength];
 
 /**
@@ -102,7 +100,10 @@ int xchat_plugin_init(
     *plugin_desc = "sets /away automatically";
     *plugin_version = "0.1";
 
-    snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText);
+    if (snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText) >= awayCommandLength) {
+        xchat_print(ph, "Away command too long\n");
+        return 0;
+    }
 
     display = XOpenDisplay(NULL);
     if (display == NULL)
