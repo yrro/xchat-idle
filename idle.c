@@ -110,8 +110,10 @@ int xchat_plugin_init(
         return 0;
     }
 
-    if (!XScreenSaverQueryExtension(display, &event_base, &error_base))
+    if (!XScreenSaverQueryExtension(display, &event_base, &error_base)) {
+        xchat_print(ph, "XScreenSaverQueryExtension failure\n");
         return 0;
+    }
 
     mit_info = XScreenSaverAllocInfo();
 
