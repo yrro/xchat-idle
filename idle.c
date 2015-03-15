@@ -41,7 +41,6 @@ static const char awayText[] = "Idle for >= 5 minutes.";
 static xchat_plugin* ph;
 
 static Display* display = NULL;
-static Window window = 0;
 static XScreenSaverInfo* mit_info;
 static int event_base, error_base;
 
@@ -57,7 +56,7 @@ static char awayCommand[awayCommandLength];
 static int checkTimeout(void* __attribute__((unused)) userdata) {
     const char* awayinfo = xchat_get_info(ph, "away");
 
-    XScreenSaverQueryInfo(display, window, mit_info);
+    XScreenSaverQueryInfo(display, DefaultRootWindow(display), mit_info);
 
     debug_printf("Idle time = %u ms.", mit_info->idle);
 
@@ -107,10 +106,6 @@ int xchat_plugin_init(
 
     display = XOpenDisplay(NULL);
     if (display == NULL)
-        return 0;
-
-    window = DefaultRootWindow(display);
-    if (window == 0)
         return 0;
 
     if (!XScreenSaverQueryExtension(display, &event_base, &error_base))
