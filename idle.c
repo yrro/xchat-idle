@@ -119,7 +119,7 @@ int xchat_plugin_init(
 
     xchat_hook_timer(ph, 10 * 1000, checkTimeout, NULL);
 
-    xchat_print(ph, "idle plugin loaded.");
+    xchat_print(ph, "idle plugin loaded\n");
 
     return 1;
 }
