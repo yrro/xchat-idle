@@ -1,8 +1,10 @@
-override CFLAGS := -std=c99 -Wall -Wextra -pedantic
-override LDFLAGS := -lX11 -lXext -lXss
+CC := gcc
+CFLAGS := -O2 -std=c99 -Wall -Wextra -pedantic -fPIC
+LDFLAGS := -Wl,--export-dynamic
+LDLIBS := -lX11 -lXext -lXss
 
 idle.so: idle.o
-	gcc -shared -o $@ $^ $(LDFLAGS)
+	gcc $(LDFLAGS) -shared -o $@ $^ $(LDLIBS)
 
 clean:
 	rm -f idle.so idle.o
