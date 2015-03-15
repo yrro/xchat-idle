@@ -86,15 +86,15 @@ static int checkTimeout(void* __attribute__((unused)) userdata) {
 }
 
 int xchat_plugin_deinit(void) {
-    XFree(mit_info);
+    if (mit_info) XFree(mit_info);
 }
 
 int xchat_plugin_init(
     xchat_plugin* plugin_handle,
-    char* plugin_name[],
-    char* plugin_desc[],
-    char* plugin_version[],
-    char* __attribute__((unused)) arg[]
+    const char* plugin_name[],
+    const char* plugin_desc[],
+    const char* plugin_version[],
+    const char* __attribute__((unused)) arg[]
 ) {
     ph = plugin_handle;
 
