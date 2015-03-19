@@ -9,4 +9,10 @@ idle.so: idle.o
 clean:
 	rm -f idle.so idle.o
 
-.PHONY: clean
+install: idle.so
+	install idle.so /usr/lib/xchat/plugins/
+
+install-user: idle.so
+	install idle.so ~/.xchat2/
+
+.PHONY: clean install install-user
