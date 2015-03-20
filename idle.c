@@ -98,7 +98,7 @@ int xchat_plugin_init(
 
     *plugin_name = "idle";
     *plugin_desc = "sets /away automatically";
-    *plugin_version = "0.1";
+    *plugin_version = "1.0";
 
     if (snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText) >= awayCommandLength) {
         xchat_print(ph, "Away command too long\n");
