@@ -1,7 +1,11 @@
+PKGS := x11 xext xscrnsaver
+PKGINCS := $(shell pkg-config --cflags $(PKGS))
+PKGLIBS := $(shell pkg-config --libs $(PKGS))
 CC := gcc
+CPPFLAGS := $(PKGINCS)
 CFLAGS := -g -O2 -std=c99 -Wall -Wextra -pedantic -fPIC
 LDFLAGS := -Wl,--export-dynamic
-LDLIBS := -lX11 -lXext -lXss
+LDLIBS := $(PKGLIBS)
 
 idle.so: idle.o
 	gcc $(LDFLAGS) -shared -o $@ $^ $(LDLIBS)
