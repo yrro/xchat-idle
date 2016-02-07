@@ -17,7 +17,7 @@
  * Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
 
-#include <xchat/xchat-plugin.h>
+#include <hexchat-plugin.h>
 
 #include <X11/Xlib.h>
 #include <X11/extensions/scrnsaver.h>
@@ -26,8 +26,8 @@
 #include <stdio.h>
 
 #ifdef DEBUG
-    #define debug_print(string) xchat_print(ph, string)
-    #define debug_printf(string, ...) xchat_printf(ph, string, ...)
+    #define debug_print(string) hexchat_print(ph, string)
+    #define debug_printf(string, ...) hexchat_printf(ph, string, ...)
 #else
     #define debug_print(string)
     #define debug_printf(string, ...)
@@ -38,7 +38,7 @@ static const unsigned long idleThreshold = 60 * 5; // in seconds
 static const char awayText[] = "Idle for >= 5 minutes.";
 
 /* Plugin data */
-static xchat_plugin* ph;
+static hexchat_plugin* ph;
 
 static Display* display = NULL;
 static XScreenSaverInfo* mit_info = NULL;
@@ -54,7 +54,7 @@ static char awayCommand[awayCommandLength];
  * NB: assumes the away status is synchronised between different servers.
  */
 static int checkTimeout(void* userdata __attribute__((unused))) {
-    const char* awayinfo = xchat_get_info(ph, "away");
+    const char* awayinfo = hexchat_get_info(ph, "away");
 
     XScreenSaverQueryInfo(display, DefaultRootWindow(display), mit_info);
 
@@ -63,7 +63,7 @@ static int checkTimeout(void* userdata __attribute__((unused))) {
     if (mit_info->idle > idleThreshold * 1000) {
         if (awayinfo == NULL) {
             debug_print("Going away!");
-            xchat_command(ph, awayCommand);
+            hexchat_command(ph, awayCommand);
         } else {
             debug_print("already away.");
         }
@@ -72,7 +72,7 @@ static int checkTimeout(void* userdata __attribute__((unused))) {
             // Only set back if we set away in the first place
             if (strncmp(awayinfo, awayText, strlen(awayText)) == 0) {
                 debug_print("we're back.");
-                xchat_command(ph, "allserv back");
+                hexchat_command(ph, "allserv back");
             }
         } else {
             debug_print("still back.");
@@ -82,14 +82,14 @@ static int checkTimeout(void* userdata __attribute__((unused))) {
     return 1;
 }
 
-int xchat_plugin_deinit(void) {
+int hexchat_plugin_deinit(void) {
     if (mit_info) XFree(mit_info);
     if (display) XCloseDisplay(display);
     return 0;
 }
 
-int xchat_plugin_init(
-    xchat_plugin* plugin_handle,
+int hexchat_plugin_init(
+    hexchat_plugin* plugin_handle,
     const char* plugin_name[],
     const char* plugin_desc[],
     const char* plugin_version[],
@@ -102,37 +102,37 @@ int xchat_plugin_init(
     *plugin_version = "1.0";
 
     if (snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText) >= awayCommandLength) {
-        xchat_print(ph, "Away command too long\n");
+        hexchat_print(ph, "Away command too long\n");
         goto err;
     }
 
     display = XOpenDisplay(NULL);
     if (display == NULL) {
-        xchat_print(ph, "XOpenDisplay failure\n");
+        hexchat_print(ph, "XOpenDisplay failure\n");
         goto err;
     }
 
     if (!XScreenSaverQueryExtension(display, &event_base, &error_base)) {
-        xchat_print(ph, "XScreenSaverQueryExtension failure\n");
+        hexchat_print(ph, "XScreenSaverQueryExtension failure\n");
         goto err;
     }
 
     mit_info = XScreenSaverAllocInfo();
     if (!mit_info) {
-        xchat_print(ph, "XScreenSaverAllocInfo failure\n");
+        hexchat_print(ph, "XScreenSaverAllocInfo failure\n");
         goto err;
     }
 
-    if (!xchat_hook_timer(ph, 60 * 1000, checkTimeout, NULL)) {
-        xchat_print(ph, "xchat_hook_timer failure\n");
+    if (!hexchat_hook_timer(ph, 60 * 1000, checkTimeout, NULL)) {
+        hexchat_print(ph, "hexchat_hook_timer failure\n");
         goto err;
     }
 
-    xchat_print(ph, "idle plugin loaded\n");
+    hexchat_print(ph, "idle plugin loaded\n");
     return 1;
 
 err:
-    xchat_plugin_deinit();
+    hexchat_plugin_deinit();
     return 0;
 }
 
