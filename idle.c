@@ -53,7 +53,7 @@ static char awayCommand[awayCommandLength];
  *
  * NB: assumes the away status is synchronised between different servers.
  */
-static int checkTimeout(void* __attribute__((unused)) userdata) {
+static int checkTimeout(void* userdata __attribute__((unused))) {
     const char* awayinfo = xchat_get_info(ph, "away");
 
     XScreenSaverQueryInfo(display, DefaultRootWindow(display), mit_info);
@@ -85,6 +85,7 @@ static int checkTimeout(void* __attribute__((unused)) userdata) {
 int xchat_plugin_deinit(void) {
     if (mit_info) XFree(mit_info);
     if (display) XCloseDisplay(display);
+    return 0;
 }
 
 int xchat_plugin_init(
@@ -92,13 +93,13 @@ int xchat_plugin_init(
     const char* plugin_name[],
     const char* plugin_desc[],
     const char* plugin_version[],
-    const char* __attribute__((unused)) arg[]
+    const char* arg[] __attribute__((unused))
 ) {
     ph = plugin_handle;
 
     *plugin_name = "idle";
     *plugin_desc = "sets /away automatically";
-    *plugin_version = "0.1";
+    *plugin_version = "1.0";
 
     if (snprintf(awayCommand, awayCommandLength, "allserv away %s", awayText) >= awayCommandLength) {
         xchat_print(ph, "Away command too long\n");
